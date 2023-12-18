@@ -6,6 +6,7 @@ class App_config
 {
     private static $app_config;
 
+    //Créer la configuration du serveur
     public static function get($key, $default = null)
     {
         if(is_null(self::$app_config))
