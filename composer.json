@@ -1,0 +1,19 @@
+{
+    "description": "Sample PHP Blog API",
+    "type": "project",
+    "name": "mathieu/projet-php-noel",
+    "autoload": {
+        "psr-4": {
+            "Mathieu\\ProjetPhpNoel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mathieu-Berthet",
+            "email": "berthetmathieu@free.fr"
+        }
+    ],
+    "require": {
+        "monolog/monolog": "1.25.1"
+    }
+}
