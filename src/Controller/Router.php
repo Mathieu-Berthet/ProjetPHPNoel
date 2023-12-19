@@ -30,7 +30,8 @@ class Router
         $parameters = (stripos($parameters, "/") !== 0) ? "/" . $parameters : $parameters;
 
         $exprr = str_replace('/', '\/', $exprr);
-        $matched = preg_match('/^' . ($exprr) . '$/' . $parameters, $is_matched, PREG_OFFSET_CAPTURE);
+        $matched = preg_match('/^' . ($exprr) . '$/', $parameters, $is_matched, PREG_OFFSET_CAPTURE);
+
 
         if($matched)
         {
