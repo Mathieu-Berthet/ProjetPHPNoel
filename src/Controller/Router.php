@@ -2,6 +2,8 @@
 
 namespace Mathieu\ProjetPhpNoel\Controller;
 
+use mikehaertl\pdftk\Pdf;
+
 class Router
 {
     //Methode GET
@@ -41,7 +43,6 @@ class Router
         {
             //Enlève un élément du tableau, ici, la route
             array_shift($is_matched);
-
 
             //On récupère les paramètres qui matches
             $parameters = array_map(function($parameter) {
