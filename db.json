@@ -1,0 +1,47 @@
+[
+    {
+        "id": 2,
+        "title": "The Post 2",
+        "body": "The Post Content"
+    },
+    {
+        "id": 2,
+        "title": "Test",
+        "body": "Test body"
+    },
+    {
+        "Type": "Entreprise",
+        "Client": [
+            {
+                "Nom": "Doe",
+                "Pr\u00e9nom": "John",
+                "N\u00b0": "36",
+                "Rue": "Ruedudon",
+                "code_postal": "26000",
+                "ville": "Valence",
+                "Pays": "France",
+                "montant_don": "100\u20ac",
+                "montant_don_lettre": "centeuros",
+                "date_don": "JJ\/MM\/AAAA",
+                "Forme_don": "acteauthentique",
+                "Nature_don": "Num\u00e9raire",
+                "Mode_versement": "ch\u00e8que",
+                "Signature": "imagedelasignature"
+            }
+        ],
+        "Association": [
+            {
+                "Nom": "soci\u00e9t\u00e9",
+                "Siret": "XXXXXXXXXX",
+                "N\u00b0": "XX",
+                "Rue": "Ruedudon",
+                "code_postal": "XXXXX",
+                "ville": "Valence",
+                "Pays": "France",
+                "Objet": "SauvegardedelaNature",
+                "Typestructure": "Associationloi1901"
+            }
+        ],
+        "id": 3
+    }
+]

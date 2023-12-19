@@ -4,6 +4,7 @@ namespace Mathieu\ProjetPhpNoel\Controller;
 
 class Router
 {
+    //Methode GET
     public static function get($app_route, $app_callback)
     {
         if(strcasecmp($_SERVER['REQUEST_METHOD'], 'GET') !== 0)
@@ -14,6 +15,7 @@ class Router
         self::on($app_route, $app_callback);
     }
 
+    //Methode POST
     public static function post($app_route, $app_callback)
     {
         if(strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') !== 0)
@@ -24,6 +26,8 @@ class Router
         self::on($app_route, $app_callback);
     }
 
+
+    //
     public static function on($exprr, $callback)
     {
         $parameters = $_SERVER['REQUEST_URI'];

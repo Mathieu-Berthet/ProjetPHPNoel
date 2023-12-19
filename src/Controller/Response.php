@@ -13,6 +13,7 @@ class Response
         return $this;
     }
 
+    //Format les data au format json
     public function toJSON($data = [])
     {
         http_response_code($this->p_status);

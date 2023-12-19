@@ -25,7 +25,7 @@ class Request
         }
 
         $post_body = [];
-        foreach($_POST  as $key => $value)
+        foreach($_POST as $key => $value)
         {
             $post_body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
         }
