@@ -25,6 +25,7 @@ final class indexTest extends TestCase
         
         $result2 = $pdf2->fillForm([
             'a2' => "SPA",
+            'a1' => 45,
         ])
         ->needAppearances()
         ->saveAs(__DIR__ . '/PDF/filled.pdf');
