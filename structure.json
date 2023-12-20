@@ -1,0 +1,62 @@
+{
+  "organism": {
+      "name": "",
+      "sirenOrRna": "",
+      "address" : {
+          "number": "",
+          "street": "",
+          "city": "",
+          "postCode": "",
+          "country": ""
+      },
+      "object": "",
+      "status": {
+          "type": "",
+          "optionalFields": {
+              "date1": "",
+              "date2": "",
+              "date3": "",
+              "reason": ""
+          }
+      }
+  },
+  "donor": {
+      "type": "",
+      "lastName": "",
+      "firstName": "",
+      "name": "",
+      "legalForm": "",
+      "siren": "",
+      "address": {
+          "number": "",
+          "street": "",
+          "city": "",
+          "postCode": "",
+          "country": ""
+      },
+      "donation": {
+          "cgi": {
+              "200": false,
+              "978": false
+          },
+          "amount": 0,
+          "date": "",
+          "type": "",
+          "nature": "",
+          "optionalField": {
+              "reason": ""
+          },
+          "methodOfPayment": "",
+          "receiptNumber": 0
+      },
+      "donationBySociety": {
+          "monetaryDonation": {
+              "amount": 0,
+              "methodOfPayment": ""
+          },
+          "inKindDonation" : {
+              "value": 0
+          }
+      }
+  }
+}

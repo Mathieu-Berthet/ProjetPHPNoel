@@ -13,15 +13,15 @@ Posts::load();
 
 Router::get('/post', function (Request $request, Response $response) {
 
-    $field = "toto";
-    $pdf = new Pdf(__DIR__ . '/PDF/cerfaEntreprise.pdf');
+    $pdf = new Pdf(__DIR__ . '/PDF/cerfaParticulier.pdf');
 
 
     //CAC1 => True pour les case à cocher
+    //1 seule case coché possible
     $result = $pdf->fillForm([
         'a1' => 1,
         'a2' => "SPA",
-        'a3' => "",
+        /*'a3' => "",
         'a4' => 14579856234,
         'a6' => 26,
         'a7' => "Rue du don",
@@ -45,14 +45,20 @@ Router::get('/post', function (Request $request, Response $response) {
         'a31' => "Quinze",
         'a32' => "",
         'a33' => "14/12/2022",
-        "Dénomination" => "test"
-
-
-
+        'Dénomination' => "test",
+        'CAC1' => true,
+        'CAC2' => true,
+        'CAC15' => true,*/
 
     ])
     ->needAppearances()
     ->saveAs(__DIR__ . '/PDF/filled.pdf');
+
+    $nameBase64 = base64_encode(__DIR__ . '/PDF/filled.pdf');
+    var_dump($nameBase64);
+
+//Test unitaire pour la génération d'un pdf en base64
+
 
     // Always check for errors
     if ($result === false) {
@@ -60,18 +66,18 @@ Router::get('/post', function (Request $request, Response $response) {
     }
 
     // Get form data fields
-    $pdf2 = new Pdf(__DIR__ . '/PDF/cerfaEntreprise.pdf');
-    $data = $pdf2->getDataFields();
+    /*$pdf2 = new Pdf(__DIR__ . '/PDF/filled.pdf');
+    $data = $pdf2->getData();
     if ($data === false) {
         $error = $pdf2->getError();
     }
 
-    var_dump($data);
-    /*foreach($field as $data)
-    {
-        var_dump("Coucou");
-        var_dump($field[1]);
-    }*/
+    
+    $txt = (string) $data;
+    $txt = $data->__toString();
+
+    //echo $txt;
+    var_dump($txt);*/
 
     $response->toJSON(Posts::all());
 });
