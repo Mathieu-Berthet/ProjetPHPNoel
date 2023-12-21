@@ -1,6 +1,8 @@
 <?php 
 
 namespace Mathieu\ProjetPhpNoel\Controller;
+
+use DateTime;
 use mikehaertl\pdftk\Pdf;
 
 
@@ -19,7 +21,9 @@ class GeneratorPDF
     //Créer le dossier ou seront stockés les pdfs générés par le web-service
     private function __construct()
     {
-        $pathPDFFinal = __DIR__ . "/../..//PDF/PDFGenerate";
+        
+        $pathPDFFinal = __DIR__ . "/../../PDF/PDFGenerate";
+
 
         if(!file_exists($pathPDFFinal))
         {
@@ -40,12 +44,57 @@ class GeneratorPDF
         return self::$instancePDF;
     }
 
+    public function isValidDate($date, $format = 'Y-m-d') {
+        $dateTime = DateTime::createFromFormat($format, $date);
+        return $dateTime && $dateTime->format($format) === $date;
+    }
+
+    public function validate($model, $client)
+    {
+        $FILLED = [];
+        foreach($model as $field => $rules)
+        {
+            $value = @$client[$field];
+            if ($rules['mandatory'] === true && !$value) return "missing field '$field'";
+            if (is_array($rules['mandatory'])) {
+                foreach ($rules['mandatory'] as $subfield => $subvalues) {
+                    foreach ($subvalues as $subvalue) {
+                        if (!isset($value) && $subvalue === $client[$subfield]) return "missing field '$field'";
+                    }
+                }
+            }
+            if (isset($value)) {
+                if ($rules['type'] === 'date' && !$this->isValidDate($value)) {
+                    return "incompatible date format for field '$field'";
+                }
+                if ($rules['type'] !== 'date' && gettype($value) !== $rules['type']) {
+                    return "incompatible type for field '$field'";
+                }
+                if (isset($rules['dependency'])) {
+                    $dependency = $rules['dependency']['field'];
+                    foreach ($rules['dependency']['values'][$client[$dependency]] as $subfield => $subvalue) {
+                        if ($rules['type'] === 'date') {
+                            $FILLED[$subfield] = DateTime::createFromFormat('Y-m-d', $value)->format($subvalue);
+                        } else {
+                            $FILLED[$subfield] = $subvalue;
+                        }
+                    }
+                } else {
+                    $FILLED[$rules['field']] = $value;
+                }
+            }
+        }
+        return $FILLED;
+    }
+
     //Remplit le pdf avec les données passées en paramètres
     public function generatePDF($path, $data)
     {
         $pathPDFFinal = $this->pathPDFFinal . '/cerfaNumber' . $this->numberGeneration . ".pdf";
-        $pdf = new Pdf($path);
 
+        $pdf = new Pdf($path);
+        //echo($path);
+        //echo($data);
         $result = $pdf->fillForm($data)
         ->needAppearances()
         ->saveAs($pathPDFFinal);
@@ -53,12 +102,10 @@ class GeneratorPDF
         // Always check for errors
         if ($result === false) {
             $error = $pdf->getError();
-            var_dum($error);
+            //var_dump($error);
         }
 
         $contenu = file_get_contents($pathPDFFinal);
-
-        //$nameBase64 = base64_encode(__DIR__ . '/PDF/filled.pdf');
 
         $contentBase64 = base64_encode($contenu);
 
@@ -70,7 +117,7 @@ class GeneratorPDF
     //Lance la génération du PDF selon le type donné 
     public function finalPDF($type, $json)
     {
-        $dataFromJson = json_decode($json);
+        $dataFromJson = json_decode($json, true);
         if($type === self::$Cerfa_Entreprise)
         {
             $pdfGenerate = $this->generatePDF(App_config::get('CERFA_ENTREPRISE_PATH'), $dataFromJson);
@@ -88,4 +135,69 @@ class GeneratorPDF
         return $pdfGenerate;
     }
 
+    public function testData()
+    {
+        $model = json_decode(file_get_contents(__DIR__. '/../../validity.json'), true);
+        
+        //Test donné par Johann
+        $client = json_decode('{
+            "asso_siren": "SPA",
+            "asso_name": "LA SPA",
+            "asso_street": "Paris",
+            "asso_type": "LOI1901"
+        }', true);
+        $client2 = json_decode('{
+            "asso_siren": "SPA",
+            "asso_name": "LA SPA",
+            "asso_street": "Paris",
+            "asso_type": "FRUP",
+            "date": "2023-01-01"
+        }', true);
+        echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;
+        $client = json_decode('{
+            "asso_siren": "SPA",
+            "asso_name": "LA SPA",
+            "asso_street": "Paris",
+            "asso_type": "FRUP"
+        }', true);
+        $client2 = json_decode('{
+            "asso_siren": "SPA",
+            "asso_name": "LA SPA",
+            "asso_street": "Paris",
+            "asso_type": "FRUP",
+            "date": "01/01/2023"
+        }', true);
+
+        $client3 = json_decode('{
+            "asso_siren": "SPA",
+            "asso_name": "LA SPA",
+            "asso_street": "Paris",
+            "asso_type": ""
+        }', true);
+        echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $client3) ) ." >> Done". PHP_EOL;
+
+
+
+
+        //Mes jeux de test
+    }
 }
+
+
+
+
+/***
+
+2 json en entrée. Celui envoyé dans la requête, + un avec les règles métiers
+
+Celui des règles métiers comprend ce que le champs doit être, s'il est obligatoire, ses dépendances, et le champ équivalent du pdf
+
+Celui qu'on reçoit contiendra les valeurs qui serviront au remplissage
+
+Selon les règles, on va aller chercher la valeur correspondante pour la remplir
+
+
+*/

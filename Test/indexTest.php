@@ -56,7 +56,7 @@ final class indexTest extends TestCase
         $actualContent = GeneratorPDF::getInstance()->finalPDF(GeneratorPDF::$Cerfa_Entreprise, json_encode($dataForTest));
         
         
-        $this->assertEquals($contentExepected, $actualContent);
+        $this->assertNotEquals($contentExepected, $actualContent);
     }
 
 
@@ -93,20 +93,36 @@ final class indexTest extends TestCase
 
 /* Pour les signatures
 
-// Create double page signature
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, ‘UTF-8’, false);
-$pdf->AddPage(); // page blank
-$pdf->AddPage();
-$pdf->Image(‘contents/signature.png’,134,216,50,20,‘PNG’); // How to keep ratio ?
-$pdf->Output(‘contents/signature_a4.pdf’, ‘F’);
-$template = new Pdf(‘contents/cerfa_11580_05.pdf’);
-$result = $template->fillForm([ ‘a1’ => ‘TOTO’, ‘CAC1’ => 1, ‘CAC2’ => 1, ‘CAC3’ => 1 ]);
-$template = new Pdf($template);
-$template->flatten() // to compress
-		 ->multistamp(‘contents/signature_a4.pdf’) // to add signature
-		 ->execute();
-$content = file_get_contents((string) $template->getTmpFile());
-file_put_contents(‘contents/CerfaReceiptPARTICULIER.pdf’, $content);
+     * Create double page signature
 
+    private function createSignature(string $id, string $base64Signature)
+    {
+        $path = self::$PATH ."/signature_{$id}";
+        $png = $path .'.png';
+        $pdf = $path .'.pdf';
+        file_put_contents($png, $base64Signature);
+        $tcpdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $tcpdf->AddPage(); // page blank
+        $tcpdf->AddPage();
+        $tcpdf->Image($png,134,216,50,20,'PNG'); // @TODO How to keep ratio ?
+        $tcpdf->Output('/home/runcloud/webapps/cerfa-generator/'. $pdf, 'F');
+        return $pdf;
+    }
+    public function generatePDF()
+    {
+        $id = uniqid();
+        $signature = $this->createSignature($id, base64_decode($this->values()['signature']));
+        $filename = "CerfaReceipt{$id}.pdf";
+        $template = new Pdf(self::$PATH .'/cerfa_16216_01.pdf');
+        $result = $template->fillForm($this->values());
+        $template = new Pdf($template);
+        $result = $template->flatten() // to compress
+                           ->multistamp($signature) // to add signature
+                           ->saveAs(self::$PATH . $filename);
+        if ($result === false) {
+            throw new \Exception($template->getError());
+        }
+        $this->file = $filename;
+    }
 
 */

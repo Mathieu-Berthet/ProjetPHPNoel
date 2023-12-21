@@ -1,0 +1,124 @@
+{
+	"asso_name":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a3"
+	},
+	"asso_street":{
+		"type": "string",
+		"mandatory": false,
+		"field": "a6"
+	},
+	"asso_siren":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a4"
+	},
+	"asso_type": {
+		"type": "string",
+		"mandatory": true,
+		"dependency": {
+			"field": "type",
+			"values": {
+				"LOI1901": {
+					"CAC0": 1,
+					"CAC1": 1
+				},
+				"FRUP": {
+					"CAC0": 2,
+					"CAC1": 1
+				},
+				"FOND_UNIV": {
+					"CAC0": 3,
+					"CAC1": 1
+				},
+                "FOND_ENT": {
+					"CAC0": 4,
+					"CAC1": 1
+				},
+                "MUSEE_FRANCE": {
+					"CAC0": 5,
+					"CAC1": 1
+				},
+                "ORGA_NON_LUCRATIF": {
+					"CAC0": 6,
+					"CAC1": 1
+				},
+                "AUTRE": {
+					"CAC0": 7,
+					"CAC1": 1
+				},
+				"ASS_CULT": {
+					"CAC2": 1
+				},
+                "ETAB_SCOL": {
+					"CAC3": 1
+				},
+                "ETAB_SCOL_SUP": {
+					"CAC4": 1
+				},
+                "SOC_PUB_PRIV": {
+					"CAC5": 1
+				},
+                "ORGA_PUB_PRIV": {
+					"CAC6": 1
+				},
+                "THESE": {
+					"CAC7": 1
+				},
+                "SOC_ETAT": {
+					"CAC8": 1
+				},
+                "SOC_NAT_AUDIO": {
+					"CAC9": 1
+				},
+                "SOC_NAT_MUSICAL": {
+					"CAC10": 1
+				},
+                "FOND_PAT": {
+					"CAC11": 1
+				},
+                "FOND_DOT": {
+					"CAC12": 1
+				},
+                "ORGA_AIDE_FINANCE": {
+					"CAC13": 1
+				},
+                "FEDE": {
+					"CAC14": 1
+				},
+                "ORGA_SAUVE": {
+					"CAC15": 1
+				},
+                "ORGA_UE": {
+					"CAC16": 1
+				}
+
+			}
+		}
+	},
+	"date": 
+    {
+		"type": "date",
+		"mandatory": {
+			"type": ["FRUP", "SCIENTIFIC", "HISTORIC"]
+		},
+		"dependency": {
+			"field": "type",
+			"values": {
+				"FRUP": {
+					"d12": "d/m/Y"
+				},
+				"FRUP_MOZEL": {
+					"d14": "d/m/Y"
+				},
+				"SCIENTIFIC": {
+					"a14": "d/m/Y"
+				},
+				"HISTORIC": {
+					"a15": "d/m/Y"
+				}
+			}
+		}
+	}
+}

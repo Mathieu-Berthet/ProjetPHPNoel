@@ -14,7 +14,7 @@ Posts::load();
 
 Router::get('/post', function (Request $request, Response $response) {
 
-    $response->toJSON(Posts::all());
+    //$response->toJSON(Posts::all());
 });
 
 Router::post('/post', function (Request $request, Response $response) {
@@ -30,5 +30,10 @@ Router::get('/post/([0-9]*)', function (Request $request, Response $response) {
         $response->p_status(404)->toJSON(['error' => "Not Found"]);
     }
 });
+
+$generator = GeneratorPDF::getInstance();
+
+$generator->testData();
+
 
 App::run();
