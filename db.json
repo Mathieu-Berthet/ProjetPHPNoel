@@ -1,47 +1,32 @@
-[
-    {
-        "id": 2,
-        "title": "The Post 2",
-        "body": "The Post Content"
-    },
-    {
-        "id": 2,
-        "title": "Test",
-        "body": "Test body"
-    },
-    {
-        "Type": "Entreprise",
-        "Client": [
-            {
-                "Nom": "Doe",
-                "Pr\u00e9nom": "John",
-                "N\u00b0": "36",
-                "Rue": "Ruedudon",
-                "code_postal": "26000",
-                "ville": "Valence",
-                "Pays": "France",
-                "montant_don": "100\u20ac",
-                "montant_don_lettre": "centeuros",
-                "date_don": "JJ\/MM\/AAAA",
-                "Forme_don": "acteauthentique",
-                "Nature_don": "Num\u00e9raire",
-                "Mode_versement": "ch\u00e8que",
-                "Signature": "imagedelasignature"
-            }
-        ],
-        "Association": [
-            {
-                "Nom": "soci\u00e9t\u00e9",
-                "Siret": "XXXXXXXXXX",
-                "N\u00b0": "XX",
-                "Rue": "Ruedudon",
-                "code_postal": "XXXXX",
-                "ville": "Valence",
-                "Pays": "France",
-                "Objet": "SauvegardedelaNature",
-                "Typestructure": "Associationloi1901"
-            }
-        ],
-        "id": 3
-    }
-]
+{
+        "a1" : 1,
+        "a2" : "SPA",
+        "a3" : "",
+        "a4" : 14579856234,
+        "a6" : 26,
+        "a7" : "Rue du don",
+        "a8" : 26000,
+        "a9" : "Valence",
+        "a10" : "France",
+        "a11" : "Protection des animaux",
+        "a12" : "2000-05-25",
+        "a19" : "15",
+        "a20" : "Rue du donateur",
+        "a21" : "26000",
+        "a22" : "Valence",
+        "a23" : 15,
+        "a24" : "Quinze",
+        "a25" : "",
+        "a26" : "",
+        "a27" : 15,
+        "a28" : "Quinze",
+        "a29" : "",
+        "a30" : 15,
+        "a31" : "Quinze",
+        "a32" : "",
+        "a33" : "14/12/2022",
+        "Dénomination" : "test",
+        "CAC1" :"0",
+        "CAC2" : "1",
+        "CAC15" : "1"
+}
