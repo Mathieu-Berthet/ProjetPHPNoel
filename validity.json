@@ -1,19 +1,46 @@
 {
+    "num_recu":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a1"
+	},
+
 	"asso_name":{
 		"type": "string",
 		"mandatory": true,
 		"field": "a3"
 	},
-	"asso_street":{
-		"type": "string",
-		"mandatory": false,
-		"field": "a6"
-	},
-	"asso_siren":{
+    "asso_siren":{
 		"type": "string",
 		"mandatory": true,
 		"field": "a4"
 	},
+    "asso_street_number":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a5"
+	},
+	"asso_street":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a6"
+	},
+    "asso_CP":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a7"
+	},
+    "asso_city":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a8"
+	},
+    "asso_country":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a9"
+	},
+	
 	"asso_type": {
 		"type": "string",
 		"mandatory": true,

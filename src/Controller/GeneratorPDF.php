@@ -55,6 +55,7 @@ class GeneratorPDF
         foreach($model as $field => $rules)
         {
             $value = @$client[$field];
+            //var_dump($value);
             if ($rules['mandatory'] === true && !$value) return "missing field '$field'";
             if (is_array($rules['mandatory'])) {
                 foreach ($rules['mandatory'] as $subfield => $subvalues) {
@@ -153,8 +154,8 @@ class GeneratorPDF
             "asso_type": "FRUP",
             "date": "2023-01-01"
         }', true);
-        echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
-        echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;
+        /*echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;*/
         $client = json_decode('{
             "asso_siren": "SPA",
             "asso_name": "LA SPA",
@@ -175,14 +176,68 @@ class GeneratorPDF
             "asso_street": "Paris",
             "asso_type": ""
         }', true);
-        echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
+       /*echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
         echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;
-        echo json_encode( $this->validate($model, $client3) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $client3) ) ." >> Done". PHP_EOL;*/
 
 
 
 
         //Mes jeux de test
+        //2 qui réussisse
+        $myClient1 = json_decode('{
+            "num_recu": "4",
+            "asso_name": "LA SPA",
+            "asso_siren": "SPA",
+            "asso_street_number": "45",
+            "asso_street": "rue des animaux",
+            "asso_CP": "75478",
+            "asso_city": "Paris",
+            "asso_country": "France",
+            "asso_type": "LOI1901"
+        }', true);
+
+        $myClient2 = json_decode('{
+            "num_recu": "3",
+            "asso_name": "Le Refuge",
+            "asso_siren": "Refuge",
+            "asso_street_number": "23",
+            "asso_street": "rue des amis",
+            "asso_CP": "69000",
+            "asso_city": "Lyon",
+            "asso_country": "France",
+            "asso_type": "LOI1901"
+        }', true);
+        echo json_encode( $this->validate($model, $myClient1) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $myClient2) ) ." >> Done". PHP_EOL;
+
+        //2 qui plante
+        $myClient3 = json_decode('{
+            "num_recu": "4",
+            "asso_name": "LA SPA",
+            "asso_siren": "SPA",
+            "asso_street_number": "45",
+            "asso_street": "rue des animaux",
+            "asso_CP": "12478",
+            "asso_city": "Paris",
+            "asso_country": "France",
+            "asso_type": "LOI1901"
+        }', true);
+
+        $myClient4 = json_decode('{
+            "num_recu": "4",
+            "asso_name": "LA SPA",
+            "asso_siren": "SPA",
+            "asso_street_number": "45",
+            "asso_street": "rue des animaux",
+            "asso_CP": "",
+            "asso_city": "Paris",
+            "asso_country": "France",
+            "asso_type": "LOI1901"
+        }', true);
+
+        echo json_encode( $this->validate($model, $myClient3) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($model, $myClient4) ) ." >> Done". PHP_EOL;
     }
 }
 
