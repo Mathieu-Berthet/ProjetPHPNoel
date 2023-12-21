@@ -10,7 +10,7 @@ class Logger extends \Monolog\Logger
     private static $log_sys = [];
 
     //Construit le système de log
-    //Test si $app_config existe, il le push dans 
+    //Test si $app_config existe, puis si c'est le cas, il crée les fichiers permettant de stocker les logs
     private function __construct($key = "app", $app_config = null)
     {
         parent::__construct($key);
@@ -28,7 +28,7 @@ class Logger extends \Monolog\Logger
     }
 
     //Permet de récupérer l'instance du Singleton, car sinon celui ci est privé
-    //Test si $app_config est vide ou null. Si c'est le cas, il crée une instance, sinon il renvoie l'instance existante, afin d'avoir qu'une seule et même instance pour les logs
+    //Test si $key est vide. Si c'est le cas, il crée une instance, sinon il renvoie l'instance existante, afin d'avoir qu'une seule et même instance pour les logs
     public static function getInstance($key = "app", $app_config = null)
     {
         if(empty(self::$log_sys[$key]))

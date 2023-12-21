@@ -6,40 +6,44 @@ use mikehaertl\pdftk\Pdf;
 
 class GeneratorPDF
 {
-    private $Cerfa_Entreprise = 'Entreprise';
-    private $Cerfa_Particulier = 'Particulier';
+    public static $Cerfa_Entreprise = 'Entreprise';
+    public static $Cerfa_Particulier = 'Particulier';
 
 
     private static $instancePDF;
-    private string $pathPDF;
+    private string $pathPDFFinal;
 
     private int $numberGeneration = 0;
 
 
+    //Créer le dossier ou seront stockés les pdfs générés par le web-service
     private function __construct()
     {
-        $myPath = __DIR__ . "/../../PDFGenerate";
-        if(!file_exists($myPath))
+        $pathPDFFinal = __DIR__ . "/../..//PDF/PDFGenerate";
+
+        if(!file_exists($pathPDFFinal))
         {
-            mkdir($myPath);
+            mkdir($pathPDFFinal);
         }
 
-        $this->pathPDF = $myPath;
+        $this->pathPDFFinal = $pathPDFFinal;
     }
 
-    public function getInstance()
+    //Récupère l'instance, ou la crée si elle n'existe pas, afin qu'elle soit unique. (Pattern Singleton)
+    public static function getInstance()
     {
         if(!isset(self::$instancePDF))
         {
-            self::$instancePDF = new generatePDF();
+            self::$instancePDF = new GeneratorPDF();
         }
 
         return self::$instancePDF;
     }
 
-    public static function generatePDF($path, $data)
+    //Remplit le pdf avec les données passées en paramètres
+    public function generatePDF($path, $data)
     {
-        $pathPDFFinal = $this->pathPDF . '/cerfaNumber' . $numberGeneration . ".pdf";
+        $pathPDFFinal = $this->pathPDFFinal . '/cerfaNumber' . $this->numberGeneration . ".pdf";
         $pdf = new Pdf($path);
 
         $result = $pdf->fillForm($data)
@@ -58,11 +62,12 @@ class GeneratorPDF
 
         $contentBase64 = base64_encode($contenu);
 
-        $numberGeneration++;
+        $this->numberGeneration++;
 
         return $contentBase64;
     }
 
+    //Lance la génération du PDF selon le type donné 
     public function finalPDF($type, $json)
     {
         $dataFromJson = json_decode($json);
