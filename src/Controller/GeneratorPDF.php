@@ -3,7 +3,9 @@
 namespace Mathieu\ProjetPhpNoel\Controller;
 
 use DateTime;
+use Exception;
 use mikehaertl\pdftk\Pdf;
+use tecnickcom\tcpdf;
 
 
 class GeneratorPDF
@@ -11,6 +13,8 @@ class GeneratorPDF
     public static $Cerfa_Entreprise = 'Entreprise';
     public static $Cerfa_Particulier = 'Particulier';
 
+
+    private static $PATH = __DIR__. '/../../';
 
     private static $instancePDF;
     private string $pathPDFFinal;
@@ -44,14 +48,32 @@ class GeneratorPDF
         return self::$instancePDF;
     }
 
+
+    public static function allTypes(): array
+    {
+    	return [
+    		self::$Cerfa_Particulier => self::$PATH . 'PDF/cerfaParticulier.pdf',
+    		self::$Cerfa_Entreprise => self::$PATH . 'PDF/cerfaEntreprise.pdf',
+    	];
+    }
+
     public function isValidDate($date, $format = 'Y-m-d') {
         $dateTime = DateTime::createFromFormat($format, $date);
         return $dateTime && $dateTime->format($format) === $date;
     }
 
-    public function validate($model, $client)
+    public function validate($client)
     {
+        
+        if (!in_array($client['type_cerfa'], array_keys(self::allTypes()))) {
+            throw new \Exception("incompatible type for field 'type'");
+        }
+
         $FILLED = [];
+        $model = json_decode(file_get_contents(self::$PATH ."model_Entreprise.json"), true);
+
+        
+        
         foreach($model as $field => $rules)
         {
             $value = @$client[$field];
@@ -90,6 +112,47 @@ class GeneratorPDF
         }
         return $FILLED;
     }
+
+    private function createSignature(string $id, string $base64Signature)
+    {
+        $path = self::$PATH ."/signature_{$id}";
+        $png = $path .'.png';
+        $pdf = $path .'.pdf';
+        file_put_contents($png, $base64Signature);
+        $tcpdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $tcpdf->AddPage(); // page blank
+        $tcpdf->AddPage();
+        $tcpdf->Image($png,134,216,50,20,'PNG'); // @TODO How to keep ratio ?
+        $tcpdf->Output('/home/runcloud/webapps/cerfa-generator/'. $pdf, 'F');
+        return $pdf;
+    }
+
+    public function generatePDFSignature()
+    {
+        $id = uniqid();
+        $signature = $this->createSignature($id, base64_decode($this->values()['signature']));
+        $filename = "CerfaReceipt{$id}.pdf";
+        $template = new Pdf(self::$PATH .'/cerfa_16216_01.pdf');
+        $result = $template->fillForm($this->values());
+        $template = new Pdf($template);
+        $result = $template->flatten() // to compress
+                           ->multistamp($signature) // to add signature
+                           ->saveAs(self::$PATH . $filename);
+        if ($result === false) {
+            throw new \Exception($template->getError());
+        }
+        $this->file = $filename;
+    }
+
+
+    public static function digits2letters($amount)
+    {
+        $formatter = \NumberFormatter::create('fr_FR', \NumberFormatter::SPELLOUT);
+        $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
+        $formatter->setAttribute(\NumberFormatter::ROUNDING_MODE, \NumberFormatter::ROUND_HALFUP);
+        return $formatter->format($amount);
+    }
+
 
     //Remplit le pdf avec les données passées en paramètres
     public function generatePDF($path, $data)
@@ -139,13 +202,16 @@ class GeneratorPDF
         return $pdfGenerate;
     }
 
+    //Pour tester la fonction validate
     public function testData()
     {
-        $model = json_decode(file_get_contents(__DIR__. '/../../validity.json'), true);
+        //$model = json_decode(file_get_contents(__DIR__. '/../../validity.json'), true);
+        //$model = json_decode(file_get_contents(self::$PATH ."model_entreprise.json"), true);
  
         //Cerfa entreprise
         //2 qui réussisse
         $myClient1 = json_decode('{
+            "type_cerfa": "Entreprise",
             "num_recu": 4,
             "asso_name": "LA SPA",
             "asso_siren": "SPA",
@@ -166,6 +232,7 @@ class GeneratorPDF
         }', true);
 
         $myClient2 = json_decode('{
+            "type_cerfa": "Entreprise",
             "num_recu": 3,
             "asso_name": "Le Refuge",
             "asso_siren": "Refuge",
@@ -184,13 +251,14 @@ class GeneratorPDF
             "total_amount": 74,
             "total_amount_letter": "soixante quatorze"
         }', true);
-        echo json_encode( $this->validate($model, $myClient1) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($myClient1) ) ." >> Done". PHP_EOL;
         echo "<br />";
-        echo json_encode( $this->validate($model, $myClient2) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($myClient2) ) ." >> Done". PHP_EOL;
         echo "<br />";
 
         //2 qui plante
         $myClient3 = json_decode('{
+            "type_cerfa": "Entreprise",
             "num_recu": 4,
             "asso_name": "LA SPA",
             "asso_siren": "SPA",
@@ -212,6 +280,7 @@ class GeneratorPDF
         }', true);
 
         $myClient4 = json_decode('{
+            "type_cerfa": "Entreprise",
             "num_recu": 3,
             "asso_name": "Le Refuge",
             "asso_siren": "Refuge",
@@ -231,15 +300,17 @@ class GeneratorPDF
             "total_amount_letter": 74
         }', true);
 
-        echo json_encode( $this->validate($model, $myClient3) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($myClient3) ) ." >> Done". PHP_EOL;
         echo "<br />";
-        echo json_encode( $this->validate($model, $myClient4) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($myClient4) ) ." >> Done". PHP_EOL;
         echo "<br />";
 
         //Test with validate for cerfa particulier
-        $modelIndiv = json_decode(file_get_contents(__DIR__. '/../../validityParticulier.json'), true);
+        //$modelIndiv = json_decode(file_get_contents(__DIR__. '/../../validityParticulier.json'), true);
+        $modelIndiv = json_decode(file_get_contents(self::$PATH ."model_Entreprise.json"), true);
 
         $myClient5 = json_decode('{
+            "type_cerfa": "Particulier",
             "num_recu": 5,
             "indiv_name": "LA SPA",
             "indiv_siren": "SPA",
@@ -259,6 +330,7 @@ class GeneratorPDF
         }', true);
 
         $myClient6 = json_decode('{
+            "type_cerfa": "Particulier",
             "num_recu": 6,
             "indiv_name": "Le Refuge",
             "indiv_siren": "Refuge",
@@ -277,9 +349,21 @@ class GeneratorPDF
             "NAT_DON_AUTRESS": "Heritage"
         }', true);
 
-        echo json_encode( $this->validate($modelIndiv, $myClient5) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($myClient5) ) ." >> Done". PHP_EOL;
         echo "<br />";
-        echo json_encode( $this->validate($modelIndiv, $myClient6) ) ." >> Done". PHP_EOL;
+        echo json_encode( $this->validate($myClient6) ) ." >> Done". PHP_EOL;
+        echo "<br />";
+        echo "<br />";
+
+        echo self::digits2letters(10007000) . " >> Done". PHP_EOL;
+        echo "<br />";
+
+        echo self::digits2letters(25) . " >> Done". PHP_EOL;
+        echo "<br />";
+
+        echo self::digits2letters(143986) . " >> Done". PHP_EOL;
+        echo "<br />";
+
     }
 }
 

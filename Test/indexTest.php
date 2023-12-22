@@ -56,7 +56,7 @@ final class indexTest extends TestCase
         $actualContent = GeneratorPDF::getInstance()->finalPDF(GeneratorPDF::$Cerfa_Entreprise, json_encode($dataForTest));
         
         
-        $this->assertNotEquals($contentExepected, $actualContent);
+        $this->assertEquals($contentExepected, $actualContent);
     }
 
 

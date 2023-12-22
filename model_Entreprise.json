@@ -1,4 +1,9 @@
 {
+	"type_cerfa":{
+		"type": "string",
+		"mandatory": true
+	},
+	
     "num_recu":{
 		"type": "integer",
 		"mandatory": true,
