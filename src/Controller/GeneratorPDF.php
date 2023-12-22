@@ -21,7 +21,6 @@ class GeneratorPDF
 
     private int $numberGeneration = 0;
 
-
     //Créer le dossier ou seront stockés les pdfs générés par le web-service
     private function __construct()
     {
@@ -64,28 +63,24 @@ class GeneratorPDF
 
     public function validate($client)
     {
-        
         if (!in_array($client['type_cerfa'], array_keys(self::allTypes()))) {
             throw new \Exception("incompatible type for field 'type'");
         }
 
         $FILLED = [];
-        $model = json_decode(file_get_contents(self::$PATH ."model_Entreprise.json"), true);
-
+        $model = json_decode(file_get_contents(self::$PATH ."model_". $client['type_cerfa'] .'.json'), true);
         
-        
+        //print_r($model);
         foreach($model as $field => $rules)
         {
-            $value = @$client[$field];
-            //var_dump($value);
-            if ($rules['mandatory'] === true && !$value) return "missing field '$field'";
-            if (is_array($rules['mandatory'])) {
-                foreach ($rules['mandatory'] as $subfield => $subvalues) {
-                    foreach ($subvalues as $subvalue) {
-                        if (!isset($value) && $subvalue === $client[$subfield]) return "missing field '$field'";
-                    }
-                }
+            $value = $client[$field];
+
+            $mandatory = isset($rules['mandatory']) && $rules['mandatory'] === true && !$value;
+            $dependency = isset($rules['dependency']) && (in_array($client[$rules['dependency']['field']], array_keys($rules['dependency']['values'])) && !$value);
+            if ($mandatory || $dependency) {
+                throw new \Exception("missing field '$field'");
             }
+
             if (isset($value)) {
                 if ($rules['type'] === 'date' && !$this->isValidDate($value)) {
                     return "incompatible date format for field '$field'";
@@ -95,18 +90,16 @@ class GeneratorPDF
                 }
                 if (isset($rules['dependency'])) {
                     $dependency = $rules['dependency']['field'];
-                    foreach ($rules['dependency']['values'][$client[$dependency]] as $subfield => $subvalue) {
-                        if ($rules['type'] === 'date') {
-                            $FILLED[$subfield] = DateTime::createFromFormat('Y-m-d', $value)->format($subvalue);
-                        } else {
-                            $FILLED[$subfield] = $subvalue;
+                    if (isset($rules['dependency']['values'][$client[$dependency]]))
+                        foreach ($rules['dependency']['values'][$client[$dependency]] as $subfield => $subvalue) {
+                            if ($rules['type'] === 'date') {
+                                $FILLED[$subfield] = DateTime::createFromFormat("Y-m-d", $value)->format($subvalue);
+                            } else {
+                                $FILLED[$subfield] = $subvalue;
+                            }
                         }
-                    }
                 } else {
-                    foreach($rules['field'] as $subfield)
-                    {
-                        $FILLED[$subfield] = $value;
-                    }
+                    $FILLED[$rules['field']] = $value;
                 }
             }
         }
@@ -157,12 +150,15 @@ class GeneratorPDF
     //Remplit le pdf avec les données passées en paramètres
     public function generatePDF($path, $data)
     {
-        $pathPDFFinal = $this->pathPDFFinal . '/cerfaNumber' . $this->numberGeneration . ".pdf";
+        $pathPDFFinal = $this->pathPDFFinal . '/test.pdf';
+        
+        $dataVerify = $this->validate($data);
+        //print_r($dataVerify);
 
         $pdf = new Pdf($path);
         //echo($path);
         //echo($data);
-        $result = $pdf->fillForm($data)
+        $result = $pdf->fillForm($dataVerify)
         ->needAppearances()
         ->saveAs($pathPDFFinal);
 
