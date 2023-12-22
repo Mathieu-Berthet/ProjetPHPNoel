@@ -81,7 +81,10 @@ class GeneratorPDF
                         }
                     }
                 } else {
-                    $FILLED[$rules['field']] = $value;
+                    foreach($rules['field'] as $subfield)
+                    {
+                        $FILLED[$subfield] = $value;
+                    }
                 }
             }
         }
@@ -139,105 +142,144 @@ class GeneratorPDF
     public function testData()
     {
         $model = json_decode(file_get_contents(__DIR__. '/../../validity.json'), true);
-        
-        //Test donné par Johann
-        $client = json_decode('{
-            "asso_siren": "SPA",
-            "asso_name": "LA SPA",
-            "asso_street": "Paris",
-            "asso_type": "LOI1901"
-        }', true);
-        $client2 = json_decode('{
-            "asso_siren": "SPA",
-            "asso_name": "LA SPA",
-            "asso_street": "Paris",
-            "asso_type": "FRUP",
-            "date": "2023-01-01"
-        }', true);
-        /*echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
-        echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;*/
-        $client = json_decode('{
-            "asso_siren": "SPA",
-            "asso_name": "LA SPA",
-            "asso_street": "Paris",
-            "asso_type": "FRUP"
-        }', true);
-        $client2 = json_decode('{
-            "asso_siren": "SPA",
-            "asso_name": "LA SPA",
-            "asso_street": "Paris",
-            "asso_type": "FRUP",
-            "date": "01/01/2023"
-        }', true);
-
-        $client3 = json_decode('{
-            "asso_siren": "SPA",
-            "asso_name": "LA SPA",
-            "asso_street": "Paris",
-            "asso_type": ""
-        }', true);
-       /*echo json_encode( $this->validate($model, $client) ) ." >> Done". PHP_EOL;
-        echo json_encode( $this->validate($model, $client2) ) ." >> Done". PHP_EOL;
-        echo json_encode( $this->validate($model, $client3) ) ." >> Done". PHP_EOL;*/
-
-
-
-
-        //Mes jeux de test
+ 
+        //Cerfa entreprise
         //2 qui réussisse
         $myClient1 = json_decode('{
-            "num_recu": "4",
+            "num_recu": 4,
             "asso_name": "LA SPA",
             "asso_siren": "SPA",
-            "asso_street_number": "45",
+            "asso_street_number": 45,
             "asso_street": "rue des animaux",
-            "asso_CP": "75478",
+            "asso_CP": 75478,
             "asso_city": "Paris",
             "asso_country": "France",
-            "asso_type": "LOI1901"
+            "object_line_1": "The object of the don",
+            "asso_type": "LOI1901",
+            "amount_nature": 15,
+            "amount_nature_letter": "quinze",
+            "description": "For help to develop organisation",
+            "amount_versement": 25,
+            "amount_versement_letter": "vingt cinq",
+            "total_amount": 40,
+            "total_amount_letter": "quarante"
         }', true);
 
         $myClient2 = json_decode('{
-            "num_recu": "3",
+            "num_recu": 3,
             "asso_name": "Le Refuge",
             "asso_siren": "Refuge",
-            "asso_street_number": "23",
+            "asso_street_number": 23,
             "asso_street": "rue des amis",
-            "asso_CP": "69000",
+            "asso_CP": 69000,
             "asso_city": "Lyon",
             "asso_country": "France",
-            "asso_type": "LOI1901"
+            "object_line_1": "Help for young and old people",
+            "asso_type": "LOI1901",
+            "amount_nature": 40,
+            "amount_nature_letter": "quarante",
+            "description": "For help young people",
+            "amount_versement": 34,
+            "amount_versement_letter": "trente quatre",
+            "total_amount": 74,
+            "total_amount_letter": "soixante quatorze"
         }', true);
         echo json_encode( $this->validate($model, $myClient1) ) ." >> Done". PHP_EOL;
+        echo "<br />";
         echo json_encode( $this->validate($model, $myClient2) ) ." >> Done". PHP_EOL;
+        echo "<br />";
 
         //2 qui plante
         $myClient3 = json_decode('{
-            "num_recu": "4",
+            "num_recu": 4,
             "asso_name": "LA SPA",
             "asso_siren": "SPA",
-            "asso_street_number": "45",
+            "asso_street_number": 45,
             "asso_street": "rue des animaux",
-            "asso_CP": "12478",
+            "asso_CP": 12478,
             "asso_city": "Paris",
             "asso_country": "France",
-            "asso_type": "LOI1901"
+            "object_line_1": "The object of the don",
+            "asso_type": "LOI1901",
+            "date": "2008/05/24",
+            "amount_nature": 15,
+            "amount_nature_letter": "quinze",
+            "description": "For help to develop organisation",
+            "amount_versement": 25,
+            "amount_versement_letter": "vingt cinq",
+            "total_amount": 40,
+            "total_amount_letter": "quarante"
         }', true);
 
         $myClient4 = json_decode('{
-            "num_recu": "4",
-            "asso_name": "LA SPA",
-            "asso_siren": "SPA",
-            "asso_street_number": "45",
-            "asso_street": "rue des animaux",
-            "asso_CP": "",
-            "asso_city": "Paris",
+            "num_recu": 3,
+            "asso_name": "Le Refuge",
+            "asso_siren": "Refuge",
+            "asso_street_number": 23,
+            "asso_street": "rue des amis",
+            "asso_CP": 69000,
+            "asso_city": "Lyon",
             "asso_country": "France",
-            "asso_type": "LOI1901"
+            "object_line_1": "Help for young and old people",
+            "asso_type": "LOI1901",
+            "amount_nature": 40,
+            "amount_nature_letter": "quarante",
+            "description": "For help young people",
+            "amount_versement": 34,
+            "amount_versement_letter": "trente quatre",
+            "total_amount": 74,
+            "total_amount_letter": 74
         }', true);
 
         echo json_encode( $this->validate($model, $myClient3) ) ." >> Done". PHP_EOL;
+        echo "<br />";
         echo json_encode( $this->validate($model, $myClient4) ) ." >> Done". PHP_EOL;
+        echo "<br />";
+
+        //Test with validate for cerfa particulier
+        $modelIndiv = json_decode(file_get_contents(__DIR__. '/../../validityParticulier.json'), true);
+
+        $myClient5 = json_decode('{
+            "num_recu": 5,
+            "indiv_name": "LA SPA",
+            "indiv_siren": "SPA",
+            "indiv_street_number": 45,
+            "indiv_street": "rue des animaux",
+            "indiv_CP": 75478,
+            "indiv_city": "Paris",
+            "indiv_country": "France",
+            "object_line_1": "The object of the don",
+            "object_line_2": "The object of the don 2",
+            "indiv_type": "LOI1901",
+            "indiv_last_name": "Doe",
+            "indiv_first_name": "John",
+            "amount_versement": 25,
+            "amount_versement_letter": "vingt cinq",
+            "NAT_DON_AUTRESS": "Heritage"
+        }', true);
+
+        $myClient6 = json_decode('{
+            "num_recu": 6,
+            "indiv_name": "Le Refuge",
+            "indiv_siren": "Refuge",
+            "indiv_street_number": 23,
+            "indiv_street": "rue des amis",
+            "indiv_CP": 69000,
+            "indiv_city": "Lyon",
+            "indiv_country": "France",
+            "object_line_1": "Help for young and old people",
+            "object_line_2": "Help for young and old people 2",
+            "indiv_type": "ANR",
+            "indiv_last_name": "Doe",
+            "indiv_first_name": "John",
+            "amount_versement": "34",
+            "amount_versement_letter": "trente quatre",
+            "NAT_DON_AUTRESS": "Heritage"
+        }', true);
+
+        echo json_encode( $this->validate($modelIndiv, $myClient5) ) ." >> Done". PHP_EOL;
+        echo "<br />";
+        echo json_encode( $this->validate($modelIndiv, $myClient6) ) ." >> Done". PHP_EOL;
     }
 }
 

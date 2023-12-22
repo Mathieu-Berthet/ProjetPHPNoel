@@ -5,40 +5,40 @@
 		"field": "a1"
 	},
 
-	"asso_name":{
+	"indiv_name":{
 		"type": "string",
 		"mandatory": true,
-		"field": ["a3", "Denomination"]
+		"field": "a3"
 	},
-    "asso_siren":{
+    "indiv_siren":{
 		"type": "string",
 		"mandatory": true,
-		"field": ["a4", "Siren"]
+		"field": "a4"
 	},
-    "asso_street_number":{
+    "indiv_street_number":{
 		"type": "integer",
 		"mandatory": true,
 		"field": ["a5", "a19"]
 	},
-	"asso_street":{
+	"indiv_street":{
 		"type": "string",
 		"mandatory": true,
 		"field": ["a6", "a20"]
 	},
-    "asso_CP":{
+    "indiv_CP":{
 		"type": "integer",
 		"mandatory": true,
 		"field": ["a7", "a21"]
 	},
-    "asso_city":{
+    "indiv_city":{
 		"type": "string",
 		"mandatory": true,
 		"field": ["a8", "a22"]
 	},
-    "asso_country":{
+    "indiv_country":{
 		"type": "string",
 		"mandatory": true,
-		"field": "a9"
+		"field": ["a9", "a23"]
 	},
 
 	"object_line_1":{
@@ -46,8 +46,14 @@
 		"mandatory": true,
 		"field": "a10"
 	},
+
+    "object_line_2":{
+		"type": "string",
+		"mandatory": true,
+		"field": "a10-2"
+	},
 	
-	"asso_type": {
+	"indiv_type": {
 		"type": "string",
 		"mandatory": true,
 		"dependency": {
@@ -90,35 +96,17 @@
                 "ETAB_SCOL_SUP": {
 					"CAC4": 1
 				},
-                "SOC_PUB_PRIV": {
+                "ASSO_PRESSE": {
 					"CAC5": 1
 				},
                 "ORGA_PUB_PRIV": {
 					"CAC6": 1
-				},
-                "THESE": {
-					"CAC7": 1
-				},
-                "SOC_ETAT": {
-					"CAC8": 1
-				},
-                "SOC_NAT_AUDIO": {
-					"CAC9": 1
-				},
-                "SOC_NAT_MUSICAL": {
-					"CAC10": 1
-				},
-                "FOND_PAT": {
-					"CAC11": 1
 				},
                 "FOND_DOT": {
 					"CAC12": 1
 				},
                 "ORGA_AIDE_FINANCE": {
 					"CAC13": 1
-				},
-                "FEDE": {
-					"CAC14": 1
 				},
                 "ORGA_SAUVE": {
 					"CAC15": 1
@@ -138,9 +126,74 @@
 				"VERSEMENT_VIR": {
 					"CAC17": 3
 				},
+				"CGI_200": {
+					"CAC21": 1
+				},
 
-				"VERSEMENT_AUTRE": {
-					"CAC17": 4
+				"CGI_978": {
+					"CAC22": 1
+				},
+
+				"ACTE_AUTH": {
+					"CAC23": 1
+				},
+
+				"ACTE_PRIVE": {
+					"CAC23": 2
+				},
+
+				"DON_MANUEL": {
+					"CAC23": 3
+				},
+
+				"DON_AUTRE": {
+					"CAC23": 4
+				},
+				"NAT_DON_NUM": {
+					"CAC27": 1
+				},
+				"NAT_DON_TITRE": {
+					"CAC27": 2
+				},
+				"NAT_DON_PRODUIT": {
+					"CAC27": 3
+				},
+				"NAT_DON_FRAIS": {
+					"CAC27": 4
+				},
+				"NAT_DON_AUTRE": {
+					"CAC27": 5
+				},
+				"ETAB_PRIV_PUB": {
+					"CAC40": 1
+				}
+                ,
+				"ENT_INSER": {
+					"CAC41": 1
+				}
+                ,
+				"ASSO_INT": {
+					"CAC42": 1
+				}
+                ,
+				"ATEL_CHANT_INSER": {
+					"CAC43": 1
+				}
+                ,
+				"ENT_ADAPT": {
+					"CAC44": 1
+				}
+                ,
+				"ANR": {
+					"CAC45": 1
+				}
+                ,
+				"GROUP_EMPLO": {
+					"CAC46": 1
+				}
+                ,
+				"ASSO_PUB": {
+					"CAC47": 1
 				}
 
 			}
@@ -161,20 +214,8 @@
 				"FRUP_MOZEL": {
 					"d14": "d/m/Y"
 				},
-				"SCIENTIFIC": {
-					"a14": "d/m/Y"
-				},
 				"HISTORIC": {
 					"a15": "d/m/Y"
-				},
-				"DATE_PME": {
-					"a16": "d/m/Y"
-				},
-				"DATE_FEDERATION": {
-					"a17": "d/m/Y"
-				},
-				"DATE_UE": {
-					"a18": "d/m/Y"
 				},
 				"DATE_DON": {
 					"a35": "d/m/Y"
@@ -183,24 +224,18 @@
 		}
 	},
 
-	"amount_nature":{
-		"type": "integer",
-		"mandatory": true,
-		"field": "a23"
-	},
-
-	"amount_nature_letter":{
+    "indiv_last_name":{
 		"type": "string",
 		"mandatory": true,
-		"field": ["a24", "a25"]
+		"field": "nom"
 	},
 
-	"description":{
+    "indiv_first_name":{
 		"type": "string",
 		"mandatory": true,
-		"field": "a26"
+		"field": "prénom"
 	},
-
+    
 	"amount_versement":{
 		"type": "integer",
 		"mandatory": true,
@@ -210,18 +245,11 @@
 	"amount_versement_letter":{
 		"type": "string",
 		"mandatory": true,
-		"field": ["a28", "a29"]
+		"field": "a28"
 	},
-
-	"total_amount":{
-		"type": "integer",
-		"mandatory": true,
-		"field": "a30"
-	},
-
-	"total_amount_letter":{
+    "NAT_DON_AUTRESS": {
 		"type": "string",
 		"mandatory": true,
-		"field": ["a31", "a32"]
+		"field": "a31"
 	}
 }
