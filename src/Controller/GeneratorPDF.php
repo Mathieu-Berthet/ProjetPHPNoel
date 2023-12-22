@@ -74,7 +74,7 @@ class GeneratorPDF
         foreach($model as $field => $rules)
         {
             $value = $client[$field];
-
+            
             $mandatory = isset($rules['mandatory']) && $rules['mandatory'] === true && !$value;
             $dependency = isset($rules['dependency']) && (in_array($client[$rules['dependency']['field']], array_keys($rules['dependency']['values'])) && !$value);
             if ($mandatory || $dependency) {

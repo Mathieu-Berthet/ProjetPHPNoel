@@ -59,7 +59,7 @@ final class indexTest extends TestCase
 
         $dataForTestWithGenerator = json_decode('{
             "type_cerfa": "Entreprise",
-            "num_recu": "12"
+            "num_recu": "12",
         }', true);
 
         $actualContent = GeneratorPDF::getInstance()->finalPDF(GeneratorPDF::$Cerfa_Entreprise, json_encode($dataForTestWithGenerator));
