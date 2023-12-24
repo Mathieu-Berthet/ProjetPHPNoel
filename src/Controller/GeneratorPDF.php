@@ -61,16 +61,15 @@ class GeneratorPDF
         return $dateTime && $dateTime->format($format) === $date;
     }
 
-    public function validate($client)
+    public function validate($client) : array
     {
+        $FILLED = [];
+        $model = json_decode(file_get_contents(self::$PATH ."model_". $client['type_cerfa'] .'.json'), true);
+        
         if (!in_array($client['type_cerfa'], array_keys(self::allTypes()))) {
             throw new \Exception("incompatible type for field 'type'");
         }
 
-        $FILLED = [];
-        $model = json_decode(file_get_contents(self::$PATH ."model_". $client['type_cerfa'] .'.json'), true);
-        
-        //print_r($model);
         foreach($model as $field => $rules)
         {
             $value = $client[$field];
@@ -83,10 +82,10 @@ class GeneratorPDF
 
             if (isset($value)) {
                 if ($rules['type'] === 'date' && !$this->isValidDate($value)) {
-                    return "incompatible date format for field '$field'";
+                    throw new \Exception("incompatible date format for field '$field'");
                 }
                 if ($rules['type'] !== 'date' && gettype($value) !== $rules['type']) {
-                    return "incompatible type for field '$field'";
+                    throw new \Exception("incompatible type for field '$field'");
                 }
                 if (isset($rules['dependency'])) {
                     $dependency = $rules['dependency']['field'];
